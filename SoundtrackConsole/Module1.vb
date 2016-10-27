@@ -4,7 +4,10 @@ Imports DotNet3dsSoundtrackConverter
 Module Module1
 
     Sub PrintUsage()
-        Console.WriteLine("Usage: SoundtrackConsole.exe <SourceDirectory> <SoundtrackDefinition> <OutputDirectory>")
+        Console.WriteLine("Usage: SoundtrackConsole.exe <Source> <SoundtrackDefinition> <OutputDirectory>")
+        Console.WriteLine("* Source can be either a directory containing the raw files of a 3DS ROM, or a compatible decrypted 3DS ROM.
+* SoundtrackDefinition is the path to the soundtrack definition file.
+* OutputDirectory is where the soundtrack files will be generated.")
     End Sub
 
     Sub OnProgressed(sender As Object, e As ProgressReportedEventArgs)
