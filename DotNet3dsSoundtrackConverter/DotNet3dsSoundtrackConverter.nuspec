@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>DotNet3dsSoundtrackConverter</id>
+    <version>$version$</version>
+    <title>.Net 3DS Soundtrack Converter</title>
+    <authors>evandixon</authors>
+    <owners>evandixon</owners>
+    <licenseUrl>https://github.com/evandixon/DotNet3dsSoundtrackConverter/blob/master/LICENSE</licenseUrl>
+    <projectUrl>https://github.com/evandixon/DotNet3dsSoundtrackConverter</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>Creates soundtracks for the 3DS from game files</description>
+    <copyright>Copyright 2016</copyright>
+  </metadata>
+</package>
