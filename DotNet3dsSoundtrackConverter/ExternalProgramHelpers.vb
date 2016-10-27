@@ -131,7 +131,7 @@ Friend Class ExternalProgramManager
             If disposing Then
                 ' TODO: dispose managed state (managed objects).
                 If Directory.Exists(CurrentToolsDir) Then
-                    Directory.Delete(CurrentToolsDir)
+                    Directory.Delete(CurrentToolsDir, True)
                 End If
             End If
 

@@ -141,23 +141,43 @@ Public Class SoundtrackConverter
         Await Convert(sourceDirectory, definition, outputDirectory)
     End Function
 
-    Public Async Function Convert(sourceDirectory As String, soundtrackDefinition As SoundtrackDefinition, outputDirectory As String) As Task
-        Dim sourceDir As String = IO.Path.Combine(sourceDirectory, soundtrackDefinition.SourcePath)
-
-        If Not IO.Directory.Exists(outputDirectory) Then
-            IO.Directory.CreateDirectory(outputDirectory)
-        End If
-
-        For Each item In IO.Directory.GetFiles(outputDirectory)
-            IO.File.Delete(item)
-        Next
-
-        Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, 0, soundtrackDefinition.Tracks.Count)
-        Me.Progress = 0
-        Me.IsCompleted = False
-        Me.IsIndeterminate = False
-
+    Public Async Function Convert(source As String, soundtrackDefinition As SoundtrackDefinition, outputDirectory As String) As Task
         Using external As New ExternalProgramManager
+            Dim sourceDir As String
+            If Directory.Exists(source) Then
+                sourceDir = IO.Path.Combine(source, soundtrackDefinition.SourcePath)
+            ElseIf File.Exists(source) Then
+                'Extract to temp directory
+                'Set sourceDir
+                Dim extractDir = Path.Combine(external.CurrentToolsDir, "extractTemp")
+                sourceDir = IO.Path.Combine(extractDir, soundtrackDefinition.SourcePath)
+                Using c As New DotNet3dsToolkit.Converter
+                    Me.Message = My.Resources.Language.LoadingUnpacking
+                    Me.Progress = 0
+                    Me.IsCompleted = False
+                    Me.IsIndeterminate = False
+
+                    Await c.ExtractAuto(source, extractDir)
+                End Using
+            Else
+                Throw New IOException(String.Format(My.Resources.Language.ErrorCantFindSource, source))
+            End If
+
+
+            If Not IO.Directory.Exists(outputDirectory) Then
+                IO.Directory.CreateDirectory(outputDirectory)
+            End If
+
+            For Each item In IO.Directory.GetFiles(outputDirectory)
+                IO.File.Delete(item)
+            Next
+
+            Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, 0, soundtrackDefinition.Tracks.Count)
+            Me.Progress = 0
+            Me.IsCompleted = False
+            Me.IsIndeterminate = False
+
+            'Start conversion
             Dim ffmpegPath = Path.Combine(external.CurrentToolsDir, "ffmpeg.exe")
 
             Dim f As New AsyncFor
@@ -168,11 +188,11 @@ Public Class SoundtrackConverter
                                                    Me.IsCompleted = e.Complete
                                                End Sub
             Await f.RunForEach(Async Function(Item As SoundtrackTrack) As Task
-                                   Dim source = IO.Path.Combine(sourceDir, Item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
-                                   Dim destinationWav As String = source.
-                                                                        Replace(sourceDir, outputDirectory).
-                                                                        Replace(soundtrackDefinition.OriginalExtension, "wav").
-                                                                        Replace(Item.OriginalName, Item.GetFilename(soundtrackDefinition.MaxTrackNumber))
+                                   Dim sourceFile = IO.Path.Combine(sourceDir, Item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
+                                   Dim destinationWav As String = sourceFile.
+                                                                    Replace(sourceDir, outputDirectory).
+                                                                    Replace(soundtrackDefinition.OriginalExtension, "wav").
+                                                                    Replace(Item.OriginalName, Item.GetFilename(soundtrackDefinition.MaxTrackNumber))
 
                                    'Remove bad characters
                                    For Each c In "!?,".ToCharArray
@@ -183,7 +203,7 @@ Public Class SoundtrackConverter
                                    Dim destinationMp3 = destinationWav.Replace(".wav", ".mp3")
 
                                    'Create the wav file
-                                   Await external.RunVGMStream(source, destinationWav)
+                                   Await external.RunVGMStream(sourceFile, destinationWav)
 
                                    'Check to see if the conversion completed successfully
                                    If IO.File.Exists(destinationWav) Then

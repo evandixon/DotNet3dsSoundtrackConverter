@@ -74,11 +74,29 @@ Namespace My.Resources
         End Property
         
         '''<summary>
+        '''  Looks up a localized string similar to Cannot find a file nor a directory at the given path: {0}.
+        '''</summary>
+        Friend Shared ReadOnly Property ErrorCantFindSource() As String
+            Get
+                Return ResourceManager.GetString("ErrorCantFindSource", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
         '''  Looks up a localized string similar to Converting Soundtrack ({0} of {1}).
         '''</summary>
         Friend Shared ReadOnly Property LoadingConvertingSoundtrackXofY() As String
             Get
                 Return ResourceManager.GetString("LoadingConvertingSoundtrackXofY", resourceCulture)
+            End Get
+        End Property
+        
+        '''<summary>
+        '''  Looks up a localized string similar to Unpacking ROM....
+        '''</summary>
+        Friend Shared ReadOnly Property LoadingUnpacking() As String
+            Get
+                Return ResourceManager.GetString("LoadingUnpacking", resourceCulture)
             End Get
         End Property
     End Class

@@ -121,7 +121,13 @@
     <value>StepCount cannot be 0.</value>
     <comment>Message for an exception that's thrown when the Step of a logical For statement is 0.</comment>
   </data>
+  <data name="ErrorCantFindSource" xml:space="preserve">
+    <value>Cannot find a file nor a directory at the given path: {0}</value>
+  </data>
   <data name="LoadingConvertingSoundtrackXofY" xml:space="preserve">
     <value>Converting Soundtrack ({0} of {1})</value>
+  </data>
+  <data name="LoadingUnpacking" xml:space="preserve">
+    <value>Unpacking ROM...</value>
   </data>
 </root>
