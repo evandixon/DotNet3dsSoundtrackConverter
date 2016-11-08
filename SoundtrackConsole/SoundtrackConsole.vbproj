@@ -107,7 +107,7 @@
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\DotNet3dsSoundtrackConverter\DotNet3dsSoundtrackConverter.vbproj">
-      <Project>{05250E67-3AE0-4AD2-BE9B-E936AF13E519}</Project>
+      <Project>{05250e67-3ae0-4ad2-be9b-e936af13e519}</Project>
       <Name>DotNet3dsSoundtrackConverter</Name>
     </ProjectReference>
   </ItemGroup>

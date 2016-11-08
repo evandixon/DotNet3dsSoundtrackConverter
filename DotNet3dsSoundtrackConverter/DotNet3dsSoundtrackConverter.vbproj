@@ -43,16 +43,16 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNet3dsToolkit, Version=1.3.0.10, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.1.3.0\lib\net46\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=1.4.1.13, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.4.1\lib\net46\DotNet3dsToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="MediaToolkit, Version=1.1.1.5, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\MediaToolkit.1.1.1-CI5\lib\net20\MediaToolkit.dll</HintPath>
+    <Reference Include="MediaToolkit, Version=1.2.1.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\MediaToolkit.1.2.1\lib\net20\MediaToolkit.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
