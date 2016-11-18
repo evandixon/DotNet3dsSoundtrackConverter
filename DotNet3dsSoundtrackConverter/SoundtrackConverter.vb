@@ -136,7 +136,7 @@ Public Class SoundtrackConverter
 
     End Class
 
-    Public Async Function CanConvert(source As String, outputDirectory As String) As Task(Of Boolean)
+    Public Async Function CanConvert(source As String) As Task(Of Boolean)
         Dim selector As New DefinitionSelector
         Return Await selector.SoundtrackDefinitionExists(source)
     End Function
