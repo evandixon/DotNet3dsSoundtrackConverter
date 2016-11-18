@@ -2,13 +2,13 @@
 Imports MediaToolkit.Model
 Imports MediaToolkit.Options
 Imports System.IO
-Imports DotNet3dsSoundtrackConverter.Misc
+Imports SkyEditor.Core.Utilities
 
 Public Class SoundtrackConverter
-    'Implements IReportProgress
+    Implements IReportProgress
 
 #Region "IReportProgress Support"
-    Public Property IsCompleted As Boolean 'Implements IReportProgress.IsCompleted
+    Public Property IsCompleted As Boolean Implements IReportProgress.IsCompleted
         Get
             Return _isCompleted
         End Get
@@ -23,7 +23,7 @@ Public Class SoundtrackConverter
     End Property
     Dim _isCompleted As Boolean
 
-    Public Property IsIndeterminate As Boolean 'Implements IReportProgress.IsIndeterminate
+    Public Property IsIndeterminate As Boolean Implements IReportProgress.IsIndeterminate
         Get
             Return _isIndeterminate
         End Get
@@ -36,7 +36,7 @@ Public Class SoundtrackConverter
     End Property
     Dim _isIndeterminate As Boolean
 
-    Public Property Message As String 'Implements IReportProgress.Message
+    Public Property Message As String Implements IReportProgress.Message
         Get
             Return _message
         End Get
@@ -49,7 +49,7 @@ Public Class SoundtrackConverter
     End Property
     Dim _message As String
 
-    Public Property Progress As Single 'Implements IReportProgress.Progress
+    Public Property Progress As Single Implements IReportProgress.Progress
         Get
             Return _progress
         End Get
@@ -66,8 +66,8 @@ Public Class SoundtrackConverter
         RaiseEvent ProgressChanged(Me, New ProgressReportedEventArgs With {.IsIndeterminate = IsIndeterminate, .Message = Message, .Progress = Progress})
     End Sub
 
-    Public Event Completed(sender As Object, e As EventArgs)
-    Public Event ProgressChanged(sender As Object, e As ProgressReportedEventArgs)
+    Public Event Completed(sender As Object, e As EventArgs) Implements IReportProgress.Completed
+    Public Event ProgressChanged(sender As Object, e As ProgressReportedEventArgs) Implements IReportProgress.ProgressChanged
 #End Region
 
     Private Class FileAbstraction
