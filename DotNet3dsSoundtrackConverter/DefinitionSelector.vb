@@ -13,7 +13,7 @@ Public Class DefinitionSelector
         Soundtracks = definitions.ToArray
     End Sub
 
-    Private Property Soundtracks As SoundtrackDefinition()
+    Public ReadOnly Property Soundtracks As SoundtrackDefinition()
 
     ''' <summary>
     ''' Selects the <see cref="SoundtrackDefinition"/> for a given game.

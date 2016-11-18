@@ -6,9 +6,18 @@ Imports Microsoft.VisualStudio.TestTools.UnitTesting
 
     <TestMethod> Public Sub EnsureCorrectDefinitionFormatting()
         Dim selector As New DefinitionSelector
-        'The real test here is to ensure no exceptions are thrown in the constructor.
-        'If exceptions are thrown, then one of the definitions is incorrectly formatted and will result in test failure.
-        Assert.IsNotNull(selector)
+
+        For Each item In selector.Soundtracks
+            Assert.IsNotNull(item.System, "System should not be null.")
+            Assert.IsNotNull(item.GameID, "GameID should not be null.")
+            Assert.IsNotNull(item.AlbumName, "AlbumName should not be null.")
+            Assert.IsNotNull(item.AlbumArtist, "AlbumArtist should not be null.")
+            Assert.IsNotNull(item.Year, "Year should not be null.")
+            Assert.IsNotNull(item.SourcePath, "SourcePath should not be null.")
+            Assert.IsNotNull(item.OriginalExtension, "OriginalExtension should not be null.")
+            Assert.IsTrue(item.Tracks.Any, "There should be at least one track in the file.")
+            Assert.IsTrue(item.MaxTrackNumber > 0, "Max track number should be greater than 0.")
+        Next
     End Sub
 
 End Class
