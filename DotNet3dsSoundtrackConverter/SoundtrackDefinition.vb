@@ -2,14 +2,12 @@
 
 Public Class SoundtrackDefinition
 
-    Public Shared Function FromSoundtrackDefFile(filename As String) As SoundtrackDefinition
+    Public Shared Function FromSoundtrackDefinitionLines(lines As IEnumerable(Of String)) As SoundtrackDefinition
         Dim out As New SoundtrackDefinition
-        Dim contents = File.ReadAllLines(filename)
-        Dim currentLine = 0
         Dim isHeaderMode = True
 
-        For count = 0 To contents.Length - 1
-            Dim parts = contents(count).Split("=".ToCharArray, 2)
+        For count = 0 To lines.Count - 1
+            Dim parts = lines(count).Split("=".ToCharArray, 2)
             If isHeaderMode Then
                 Select Case parts(0).ToLower
                     Case "system"
@@ -27,7 +25,6 @@ Public Class SoundtrackDefinition
                     Case "extension"
                         out.OriginalExtension = parts(1)
                     Case "end"
-                        currentLine = count + 1
                         isHeaderMode = False
                     Case Else
                         'Skip the line, look for "end" to exit
@@ -39,6 +36,15 @@ Public Class SoundtrackDefinition
             End If
         Next
         Return out
+    End Function
+
+    Public Shared Function FromSoundtrackDefinitionFile(filename As String) As SoundtrackDefinition
+        Dim contents = File.ReadAllLines(filename)
+        Return FromSoundtrackDefinitionLines(contents)
+    End Function
+
+    Public Shared Function FromSoundtrackDefinitionContents(contents As String) As SoundtrackDefinition
+        Return FromSoundtrackDefinitionLines(contents.Split(vbLf).Select(Function(line) line.Trim))
     End Function
 
     Public Sub New()

@@ -12,9 +12,9 @@ Public Class SoundtrackConverter
         Get
             Return _isCompleted
         End Get
-        Private Set(value As Boolean)
-            If Not _isCompleted = value Then
-                _isCompleted = value
+        Private Set
+            If Not _isCompleted = Value Then
+                _isCompleted = Value
                 If _isCompleted Then
                     RaiseEvent Completed(Me, New EventArgs)
                 End If
@@ -27,9 +27,9 @@ Public Class SoundtrackConverter
         Get
             Return _isIndeterminate
         End Get
-        Private Set(value As Boolean)
-            If Not _isIndeterminate = value Then
-                _isIndeterminate = value
+        Private Set
+            If Not _isIndeterminate = Value Then
+                _isIndeterminate = Value
                 UpdateLoadingStatus()
             End If
         End Set
@@ -40,9 +40,9 @@ Public Class SoundtrackConverter
         Get
             Return _message
         End Get
-        Private Set(value As String)
-            If Not _message = value Then
-                _message = value
+        Private Set
+            If Not _message = Value Then
+                _message = Value
                 UpdateLoadingStatus()
             End If
         End Set
@@ -53,9 +53,9 @@ Public Class SoundtrackConverter
         Get
             Return _progress
         End Get
-        Private Set(value As Single)
-            If Not _progress = value Then
-                _progress = value
+        Private Set
+            If Not _progress = Value Then
+                _progress = Value
                 UpdateLoadingStatus()
             End If
         End Set
@@ -73,8 +73,11 @@ Public Class SoundtrackConverter
     Private Class FileAbstraction
         Implements TagLib.File.IFileAbstraction
         Implements IDisposable
+        Public Sub New(filename As String)
+            Filestream = IO.File.Open(filename, IO.FileMode.Open, IO.FileAccess.ReadWrite)
+        End Sub
 
-        Private Filestream As IO.FileStream
+        Private ReadOnly Property Filestream As IO.FileStream
 
         Public ReadOnly Property Name As String Implements TagLib.File.IFileAbstraction.Name
             Get
@@ -96,10 +99,6 @@ Public Class SoundtrackConverter
 
         Public Sub CloseStream(stream As Stream) Implements TagLib.File.IFileAbstraction.CloseStream
             stream.Close()
-        End Sub
-
-        Public Sub New(Filename As String)
-            Filestream = IO.File.Open(Filename, IO.FileMode.Open, IO.FileAccess.ReadWrite)
         End Sub
 
 #Region "IDisposable Support"
@@ -134,28 +133,39 @@ Public Class SoundtrackConverter
             ' GC.SuppressFinalize(Me)
         End Sub
 #End Region
+
     End Class
 
-    Public Async Function Convert(sourceDirectory As String, soundtrackDefinitionFilename As String, outputDirectory As String) As Task
-        Dim definition = SoundtrackDefinition.FromSoundtrackDefFile(soundtrackDefinitionFilename)
-        Await Convert(sourceDirectory, definition, outputDirectory)
+    Public Async Function CanConvert(source As String, outputDirectory As String) As Task(Of Boolean)
+        Dim selector As New DefinitionSelector
+        Return Await selector.SoundtrackDefinitionExists(source)
+    End Function
+
+    Public Async Function Convert(source As String, soundtrackDefinitionFilename As String, outputDirectory As String) As Task
+        Dim definition = SoundtrackDefinition.FromSoundtrackDefinitionFile(soundtrackDefinitionFilename)
+        Await Convert(source, definition, outputDirectory)
+    End Function
+
+    Public Async Function Convert(source As String, outputDirectory As String) As Task
+        Dim selector As New DefinitionSelector
+        Await Convert(source, Await selector.SelectSoundtrackDefinition(source), outputDirectory)
     End Function
 
     Public Async Function Convert(source As String, soundtrackDefinition As SoundtrackDefinition, outputDirectory As String) As Task
         Using external As New ExternalProgramManager
             Dim sourceDir As String
             If Directory.Exists(source) Then
-                sourceDir = IO.Path.Combine(source, soundtrackDefinition.SourcePath)
+                'If source is a directory, no additional action needs to be taken
+                sourceDir = Path.Combine(source, soundtrackDefinition.SourcePath)
             ElseIf File.Exists(source) Then
-                'Extract to temp directory
-                'Set sourceDir
+                'If source is a file, we must first extract the file
                 Dim extractDir = Path.Combine(external.CurrentToolsDir, "extractTemp")
-                sourceDir = IO.Path.Combine(extractDir, soundtrackDefinition.SourcePath)
+                sourceDir = Path.Combine(extractDir, soundtrackDefinition.SourcePath)
                 Using c As New DotNet3dsToolkit.Converter
-                    Me.Message = My.Resources.Language.LoadingUnpacking
-                    Me.Progress = 0
-                    Me.IsCompleted = False
-                    Me.IsIndeterminate = False
+                    Message = My.Resources.Language.LoadingUnpacking
+                    Progress = 0
+                    IsCompleted = False
+                    IsIndeterminate = False
 
                     Await c.ExtractAuto(source, extractDir)
                 End Using
@@ -163,13 +173,12 @@ Public Class SoundtrackConverter
                 Throw New IOException(String.Format(My.Resources.Language.ErrorCantFindSource, source))
             End If
 
-
-            If Not IO.Directory.Exists(outputDirectory) Then
-                IO.Directory.CreateDirectory(outputDirectory)
+            If Not Directory.Exists(outputDirectory) Then
+                Directory.CreateDirectory(outputDirectory)
             End If
 
             For Each item In IO.Directory.GetFiles(outputDirectory)
-                IO.File.Delete(item)
+                File.Delete(item)
             Next
 
             Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, 0, soundtrackDefinition.Tracks.Count)
@@ -187,12 +196,12 @@ Public Class SoundtrackConverter
                                                    Me.Progress = e.Progress
                                                    Me.IsCompleted = e.Complete
                                                End Sub
-            Await f.RunForEach(Async Function(Item As SoundtrackTrack) As Task
-                                   Dim sourceFile = IO.Path.Combine(sourceDir, Item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
+            Await f.RunForEach(Async Function(item As SoundtrackTrack) As Task
+                                   Dim sourceFile = IO.Path.Combine(sourceDir, item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
                                    Dim destinationWav As String = sourceFile.
                                                                     Replace(sourceDir, outputDirectory).
                                                                     Replace(soundtrackDefinition.OriginalExtension, "wav").
-                                                                    Replace(Item.OriginalName, Item.GetFilename(soundtrackDefinition.MaxTrackNumber))
+                                                                    Replace(item.OriginalName, item.GetFilename(soundtrackDefinition.MaxTrackNumber))
 
                                    'Remove bad characters
                                    For Each c In "!?,".ToCharArray
@@ -224,8 +233,8 @@ Public Class SoundtrackConverter
                                            With t.Tag
                                                .Album = soundtrackDefinition.AlbumName
                                                .AlbumArtists = {soundtrackDefinition.AlbumArtist}
-                                               .Title = Item.TrackName
-                                               .Track = Item.TrackNumber
+                                               .Title = item.TrackName
+                                               .Track = item.TrackNumber
                                                .Year = soundtrackDefinition.Year
 #Disable Warning
                                                'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
