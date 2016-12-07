@@ -21,7 +21,14 @@ Public Class DefinitionSelector
     ''' <param name="rom">NDS or decrypted 3DS ROM (either a file or a directory) for which to get the soundtrack.</param>
     ''' <returns>The<see cref="SoundtrackDefinition"/> for the given game, or null if there is no soundtrack for the given game.</returns>
     Public Async Function SelectSoundtrackDefinition(rom As String) As Task(Of SoundtrackDefinition)
-        Dim gameId = Await DotNet3dsToolkit.MetadataReader.GetGameID(rom)
+        Dim gameId As String
+
+        Try
+            gameId= Await DotNet3dsToolkit.MetadataReader.GetGameID(rom)
+        Catch ex As NotSupportedException
+            Return Nothing
+        End Try
+        
         Return Soundtracks.Where(Function(definition) (New Regex(definition.GameID)).IsMatch(gameId)).FirstOrDefault
     End Function
 
