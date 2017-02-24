@@ -181,7 +181,7 @@ Public Class SoundtrackConverter
                 File.Delete(item)
             Next
 
-            Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, 0, soundtrackDefinition.Tracks.Count)
+            Me.Message = My.Resources.Language.LoadingConvertingSoundtrack
             Me.Progress = 0
             Me.IsCompleted = False
             Me.IsIndeterminate = False
@@ -191,12 +191,12 @@ Public Class SoundtrackConverter
 
             Dim f As New AsyncFor
             f.BatchSize = Environment.ProcessorCount * 2
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As LoadingStatusChangedEventArgs)
-                                                   Me.Message = String.Format(My.Resources.Language.LoadingConvertingSoundtrackXofY, e.Completed, e.Total)
+            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                                   Me.Message = My.Resources.Language.LoadingConvertingSoundtrack
                                                    Me.Progress = e.Progress
-                                                   Me.IsCompleted = e.Complete
                                                End Sub
-            Await f.RunForEach(Async Function(item As SoundtrackTrack) As Task
+            Await f.RunForEach(soundtrackDefinition.Tracks,
+                               Async Function(item As SoundtrackTrack) As Task
                                    Dim sourceFile = IO.Path.Combine(sourceDir, item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
                                    Dim destinationWav As String = sourceFile.
                                                                     Replace(sourceDir, outputDirectory).
@@ -246,7 +246,7 @@ Public Class SoundtrackConverter
                                    Else
                                        'Todo: log error somehow
                                    End If
-                               End Function, soundtrackDefinition.Tracks)
+                               End Function)
         End Using
         IsCompleted = True
     End Function

@@ -124,8 +124,8 @@
   <data name="ErrorCantFindSource" xml:space="preserve">
     <value>Cannot find a file nor a directory at the given path: {0}</value>
   </data>
-  <data name="LoadingConvertingSoundtrackXofY" xml:space="preserve">
-    <value>Converting Soundtrack ({0} of {1})</value>
+  <data name="LoadingConvertingSoundtrack" xml:space="preserve">
+    <value>Converting Soundtrack</value>
   </data>
   <data name="LoadingUnpacking" xml:space="preserve">
     <value>Unpacking ROM...</value>
