@@ -191,10 +191,10 @@ Public Class SoundtrackConverter
 
             Dim f As New AsyncFor
             f.BatchSize = Environment.ProcessorCount * 2
-            AddHandler f.LoadingStatusChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
-                                                   Me.Message = My.Resources.Language.LoadingConvertingSoundtrack
-                                                   Me.Progress = e.Progress
-                                               End Sub
+            AddHandler f.ProgressChanged, Sub(sender As Object, e As ProgressReportedEventArgs)
+                                              Me.Message = My.Resources.Language.LoadingConvertingSoundtrack
+                                              Me.Progress = e.Progress
+                                          End Sub
             Await f.RunForEach(soundtrackDefinition.Tracks,
                                Async Function(item As SoundtrackTrack) As Task
                                    Dim sourceFile = IO.Path.Combine(sourceDir, item.OriginalName) & "." & soundtrackDefinition.OriginalExtension
