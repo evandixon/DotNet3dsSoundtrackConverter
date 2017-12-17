@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports SkyEditor.Core.IO
 
 Friend Class ExternalProgramManager
     Implements IDisposable
@@ -76,8 +77,7 @@ Friend Class ExternalProgramManager
                     IO.File.WriteAllBytes(zipPath, My.Resources.vgmstream)
 
                     'Extract the zip
-                    Dim f As New ICSharpCode.SharpZipLib.Zip.FastZip
-                    f.ExtractZip(zipPath, fullPath, ".*")
+                    SkyEditor.Core.Utilities.Zip.UnzipDir(zipPath, fullPath, New PhysicalIOProvider)
                 End If
 
                 VgmStreamPath = IO.Path.Combine(fullPath, "test.exe")
