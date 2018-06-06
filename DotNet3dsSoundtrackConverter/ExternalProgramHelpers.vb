@@ -1,4 +1,5 @@
 ﻿Imports System.IO
+Imports System.IO.Compression
 Imports SkyEditor.Core.IO
 
 Friend Class ExternalProgramManager
@@ -59,7 +60,7 @@ Friend Class ExternalProgramManager
     End Sub
 
     Private Function ResetToolsDir() As String
-        CurrentToolsDir = IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "DotNet3dsSoundtrackConverter-" & Guid.NewGuid.ToString)
+        CurrentToolsDir = IO.Path.Combine(Path.GetTempPath(), "DotNet3dsSoundtrackConverter-" & Guid.NewGuid.ToString)
         If Not IO.Directory.Exists(CurrentToolsDir) Then
             IO.Directory.CreateDirectory(CurrentToolsDir)
         End If
@@ -77,7 +78,7 @@ Friend Class ExternalProgramManager
                     IO.File.WriteAllBytes(zipPath, My.Resources.vgmstream)
 
                     'Extract the zip
-                    SkyEditor.Core.Utilities.Zip.UnzipDir(zipPath, fullPath, New PhysicalIOProvider)
+                    ZipFile.ExtractToDirectory(zipPath, fullPath)
                 End If
 
                 VgmStreamPath = IO.Path.Combine(fullPath, "test.exe")
@@ -87,7 +88,7 @@ Friend Class ExternalProgramManager
     End Function
 
     Public Async Function RunVgmStream(arguments As String) As Task
-        Await RunProgram(GetVgmStreamPath, arguments).ConfigureAwait(False)
+        Await RunProgram(GetVgmStreamPath, arguments)
     End Function
 
     ''' <summary>

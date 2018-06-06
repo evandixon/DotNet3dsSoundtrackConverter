@@ -70,72 +70,6 @@ Public Class SoundtrackConverter
     Public Event ProgressChanged(sender As Object, e As ProgressReportedEventArgs) Implements IReportProgress.ProgressChanged
 #End Region
 
-    Private Class FileAbstraction
-        Implements TagLib.File.IFileAbstraction
-        Implements IDisposable
-        Public Sub New(filename As String)
-            Filestream = IO.File.Open(filename, IO.FileMode.Open, IO.FileAccess.ReadWrite)
-        End Sub
-
-        Private ReadOnly Property Filestream As IO.FileStream
-
-        Public ReadOnly Property Name As String Implements TagLib.File.IFileAbstraction.Name
-            Get
-                Return Filestream.Name
-            End Get
-        End Property
-
-        Public ReadOnly Property ReadStream As Stream Implements TagLib.File.IFileAbstraction.ReadStream
-            Get
-                Return Filestream
-            End Get
-        End Property
-
-        Public ReadOnly Property WriteStream As Stream Implements TagLib.File.IFileAbstraction.WriteStream
-            Get
-                Return Filestream
-            End Get
-        End Property
-
-        Public Sub CloseStream(stream As Stream) Implements TagLib.File.IFileAbstraction.CloseStream
-            stream.Close()
-        End Sub
-
-#Region "IDisposable Support"
-        Private disposedValue As Boolean ' To detect redundant calls
-
-        ' IDisposable
-        Protected Overridable Sub Dispose(disposing As Boolean)
-            If Not Me.disposedValue Then
-                If disposing Then
-                    ' TODO: dispose managed state (managed objects).
-                    Filestream.Dispose()
-                End If
-
-                ' TODO: free unmanaged resources (unmanaged objects) and override Finalize() below.
-                ' TODO: set large fields to null.
-            End If
-            Me.disposedValue = True
-        End Sub
-
-        ' TODO: override Finalize() only if Dispose(disposing As Boolean) above has code to free unmanaged resources.
-        'Protected Overrides Sub Finalize()
-        '    ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-        '    Dispose(False)
-        '    MyBase.Finalize()
-        'End Sub
-
-        ' This code added by Visual Basic to correctly implement the disposable pattern.
-        Public Sub Dispose() Implements IDisposable.Dispose
-            ' Do not change this code.  Put cleanup code in Dispose(disposing As Boolean) above.
-            Dispose(True)
-            ' TODO: uncomment the following line if Finalize() is overridden above.
-            ' GC.SuppressFinalize(Me)
-        End Sub
-#End Region
-
-    End Class
-
     Public Async Function CanConvert(source As String) As Task(Of Boolean)
         Dim selector As New DefinitionSelector
         Return Await selector.SoundtrackDefinitionExists(source)
@@ -228,21 +162,19 @@ Public Class SoundtrackConverter
                                        IO.File.Delete(destinationWav)
 
                                        'Add the tag
-                                       Using abs As New FileAbstraction(destinationMp3)
-                                           Dim t As New TagLib.Mpeg.AudioFile(abs)
-                                           With t.Tag
-                                               .Album = soundtrackDefinition.AlbumName
-                                               .AlbumArtists = {soundtrackDefinition.AlbumArtist}
-                                               .Title = item.TrackName
-                                               .Track = item.TrackNumber
-                                               .Year = soundtrackDefinition.Year
+                                       Dim t As New TagLib.Mpeg.AudioFile(destinationMp3)
+                                       With t.Tag
+                                           .Album = soundtrackDefinition.AlbumName
+                                           .AlbumArtists = {soundtrackDefinition.AlbumArtist}
+                                           .Title = item.TrackName
+                                           .Track = item.TrackNumber
+                                           .Year = soundtrackDefinition.Year
 #Disable Warning
-                                               'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
-                                               .Artists = {soundtrackDefinition.AlbumArtist}
+                                           'Disabling warning because this tag needs to be set to ensure compatibility, like with Windows Explorer and Windows Media Player.
+                                           .Artists = {soundtrackDefinition.AlbumArtist}
 #Enable Warning
-                                           End With
-                                           t.Save()
-                                       End Using
+                                       End With
+                                       t.Save()
                                    Else
                                        'Todo: log error somehow
                                    End If
