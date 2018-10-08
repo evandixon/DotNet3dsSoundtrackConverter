@@ -44,11 +44,11 @@
     <OptionInfer>On</OptionInfer>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="DotNet3dsToolkit, Version=2.0.0.52, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNet3dsToolkit.2.0.0-CI52\lib\net462\DotNet3dsToolkit.dll</HintPath>
+    <Reference Include="DotNet3dsToolkit, Version=0.0.0.86, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNet3dsToolkit.1.5.1-v1-legacy.2\lib\net462\DotNet3dsToolkit.dll</HintPath>
     </Reference>
-    <Reference Include="DotNetNdsToolkit, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotNetNdsToolkit.2.0.0-CI118\lib\net462\DotNetNdsToolkit.dll</HintPath>
+    <Reference Include="DotNetNdsToolkit, Version=2.0.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotNetNdsToolkit.2.0.1\lib\net462\DotNetNdsToolkit.dll</HintPath>
     </Reference>
     <Reference Include="MediaToolkit, Version=1.2.2.5, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MediaToolkit.1.2.2-CI5\lib\net20\MediaToolkit.dll</HintPath>
@@ -57,7 +57,7 @@
       <HintPath>..\packages\Newtonsoft.Json.11.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
     <Reference Include="SkyEditor.Core, Version=4.1.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\packages\SkyEditor.Core.4.1.0-CI193\lib\net462\SkyEditor.Core.dll</HintPath>
+      <HintPath>..\packages\SkyEditor.Core.4.2.3\lib\net462\SkyEditor.Core.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
