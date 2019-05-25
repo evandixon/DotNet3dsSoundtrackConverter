@@ -3,6 +3,7 @@ Imports MediaToolkit.Model
 Imports MediaToolkit.Options
 Imports System.IO
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.Utilities.AsyncFor
 
 Public Class SoundtrackConverter
     Implements IReportProgress

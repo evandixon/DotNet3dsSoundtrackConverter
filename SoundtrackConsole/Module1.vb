@@ -1,6 +1,7 @@
 ﻿Imports System.IO
 Imports DotNet3dsSoundtrackConverter
 Imports SkyEditor.Core.Utilities
+Imports SkyEditor.Utilities.AsyncFor
 
 Module Module1
 
